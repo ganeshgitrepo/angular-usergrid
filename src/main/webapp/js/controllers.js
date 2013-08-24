@@ -1,6 +1,4 @@
-
 var rootPath = "/angular-usergrid";
-
 client = new Usergrid.Client({
 	orgName: "snoopdave",
 	appName: "volda",
