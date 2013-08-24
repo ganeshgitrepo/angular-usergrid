@@ -31,6 +31,7 @@ public class RoutingFilter implements Filter {
 
 	private String angularRoutes[] = {
 		"login",	
+		"register",	
 		"page1",	
 		"page2"	
 	};
