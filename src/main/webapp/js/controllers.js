@@ -32,9 +32,11 @@ function LoginController($scope, $location) {
 	$scope.login = function(uname, pword) {
 		client.login(uname, pword, function(err, data) {
 			if (err) {
-				$scope.alerts.push({type: "error", msg: "Login failed, please try again..."});
+				$scope.alerts.push({type: "error", 
+					msg: "Login failed, please try again..."});
 			} else {
-				$scope.alerts.push({type: "success", msg: "Login success. Directing you to page #1"});
+				$scope.alerts.push({type: "success", 
+					msg: "Login success. Directing you to page #1"});
 				$location.path(rootPath + "/page1");
 			}
 			$scope.$apply();
@@ -51,12 +53,14 @@ function RegistrationController($scope, $location) {
 	$scope.password = "";
 	$scope.password_verify = "";
 	$scope.alerts = [];
-	$scope.register = function(username, email, password) {
-		client.login(uname, pword, function(err, data) {
+	$scope.register = function(username, password, email) {
+		client.signup(username, password, email, null, function(err, data) {
 			if (err) {
-				$scope.alerts.push({type:"error", msg:"Login failed, please try again..."});
+				$scope.alerts.push({type:"error", 
+					msg:"Registration failed, please try again..."});
 			} else {
-				$scope.alerts.push({type:"success", msg:"Login success. Directing you to page #1"});
+				$scope.alerts.push({type:"success", 
+					msg:"Registrsation success. Directing you to login page."});
 				$location.path(rootPath + "/page1");
 			}
 			$scope.$apply();
@@ -64,9 +68,6 @@ function RegistrationController($scope, $location) {
 	};
 	$scope.closeAlert = function(index) {
 		$scope.alerts.splice(index, 1);
-	};
-	$scope.validate = function() {
-		return false;
 	};
 }
 
@@ -79,6 +80,7 @@ appModule.directive('match', function($parse) {
 				return $parse(attrs.match)(scope) === ctrl.$modelValue;
 			}, function(currentValue) {
 				ctrl.$setValidity('mismatch', currentValue);
+				//scope.$apply();
 			});
 		}
 	};

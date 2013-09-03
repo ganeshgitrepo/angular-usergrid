@@ -41,15 +41,16 @@
 	<div class="control-group">
 		<label class="control-label" for="password">Password (verify)</label>
 		<div class="controls">
-			<input id="password" ng-model="password_verify" type="password" required match="password"> 
+			<input id="password" ng-model="password_verify" 
+			   type="password" required match="password"> 
 		</div>
 	</div>
 
 	<div class="control-group">
 		<div class="controls">
 			<input class="btn btn-primary" 
-				   type="button" value="Register" disabled="!registrationForm.$valid"
-				   ng-click="register(username, email, password)">
+				type="button" value="Register" ng-disabled="!registrationForm.$valid"
+				ng-click="register(username, password, email)">
 		</div> 
 	</div>
 

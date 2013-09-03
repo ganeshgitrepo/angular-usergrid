@@ -16,6 +16,8 @@
 package snoopware.api;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -28,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @WebFilter("/*")
 public class RoutingFilter implements Filter {
+	private static final Logger log = Logger.getLogger(RoutingFilter.class.getName());
 
 	private String angularRoutes[] = {
 		"login",	
@@ -44,12 +47,11 @@ public class RoutingFilter implements Filter {
 		throws IOException, ServletException {
 
 		HttpServletRequest req = (HttpServletRequest)request;
-		System.out.println(req.getServletPath());
 
 		for (String angularRoute : angularRoutes) {
 			if (req.getServletPath().endsWith(angularRoute)) {
 				RequestDispatcher rd = req.getRequestDispatcher("/index.html");
-				System.out.println("Dispatching " + req.getServletPath() + " to " + "/index.html");
+				//log.log(Level.INFO,"Dispatching {0} to /index.html", req.getServletPath());
 				rd.forward(request, response);
 				return;
 			}
