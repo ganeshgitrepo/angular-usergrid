@@ -18,6 +18,8 @@
 *  limitations under the License.
 *
 *  @author rod simpson (rod@apigee.com)
+*  
+*  @author Dave Johnson (minor changes only, all marked with DMJ)
 */
 
 
@@ -285,11 +287,13 @@ Usergrid.Client.prototype.createEntity = function (options, callback) {
       entity.set(options.data); //add the data again just in case
       entity.save(function(err, data) {
         if (typeof(callback) === 'function') {
+		  entity.error = data.error; // DMJ
           callback(err, entity);
         }
       });
     } else {
       if (typeof(callback) === 'function') {
+		entity.error = data.error; // DMJ
         callback(err, entity);
       }
     }

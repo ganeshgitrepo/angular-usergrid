@@ -86,6 +86,36 @@ appModule.directive('match', function($parse) {
 	};
 });
 
+appModule.directive('uniqueUsername', function($parse) {
+	return {
+		require: 'ngModel',
+		link: function(scope, elem, attrs, ctrl) {
+			elem.keyup(function(evt) {
+				var options = { type:"user", username: ctrl.$modelValue };
+				client.getEntity(options, function(err, data) {
+					ctrl.$setValidity(err); // error means user not found with that username
+					scope.$apply();
+				});
+			});
+		}
+	};
+});
+
+//appModule.directive('uniqueEmail', function($parse) {
+//	return {
+//		require: 'ngModel',
+//		link: function(scope, elem, attrs, ctrl) {
+//			elem.keyup(function(evt) {
+//				var options = { type:"user", username: ctrl.$modelValue };
+//				client.getEntity(options, function(err, data) {
+//					ctrl.$setValidity(err); // error means user not found with that username
+//					scope.$apply();
+//				});
+//			});
+//		}
+//	};
+//});
+
 function Page1Controller($scope, $location) {
 	if (!client.getToken()) {
 		$location.path(rootPath + "/login");
