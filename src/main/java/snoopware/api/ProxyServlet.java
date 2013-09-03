@@ -41,8 +41,7 @@ import java.net.URI;
 import java.util.BitSet;
 import java.util.Enumeration;
 import java.util.Formatter;
-import javax.servlet.annotation.WebInitParam;
-import javax.servlet.annotation.WebServlet;
+import java.util.logging.Level;
 
 /**
  * An HTTP reverse proxy/gateway servlet. It is designed to be extended for customization if
@@ -62,16 +61,9 @@ import javax.servlet.annotation.WebServlet;
  * </p>
  *
  * @author David Smiley dsmiley@mitre.org
- * @author Dave Johnson (snoopdave@gmail.com) - my mods are marked with DMJ 
  */
-@WebServlet( // DMJ
-	name = "usergridProxy", urlPatterns = {"/api/*"}, 
-	initParams={
-		@WebInitParam(name="log", value="true"),
-		@WebInitParam(name="targetUri", value="https://api.usergrid.com/")
-	}) 
-public class ProxyServlet extends HttpServlet {
 
+public class ProxyServlet extends HttpServlet {
 	/* INIT PARAMETER NAME CONSTANTS */
 	/**
 	 * A boolean parameter name to enable logging of input and target URLs to the servlet log.
@@ -174,7 +166,7 @@ public class ProxyServlet extends HttpServlet {
 		try {
 			// Execute the request
 			if (doLog) {
-				log("proxy " + method + " uri: " + servletRequest.getRequestURI() 
+				log("proxy " + method + " uri: " + servletRequest.getRequestURL().toString()
 						+ " -- " + proxyRequest.getRequestLine().getUri());
 			}
 			HttpResponse proxyResponse = proxyClient.execute(URIUtils.extractHost(targetUri), proxyRequest);
@@ -256,7 +248,7 @@ public class ProxyServlet extends HttpServlet {
 		try {
 			closeable.close();
 		} catch (IOException e) {
-			log(e.getMessage(), e);
+			log(e.getMessage());
 		}
 	}
 	/**
@@ -342,7 +334,7 @@ public class ProxyServlet extends HttpServlet {
 	 * Reads the request URI from {@code servletRequest} and rewrites it, considering {@link
 	 * #targetUri}. It's used to make the new request.
 	 */
-	protected String rewriteUrlFromRequest(HttpServletRequest servletRequest) {
+	protected String rewriteUrlFromRequest(HttpServletRequest servletRequest) { 
 		StringBuilder uri = new StringBuilder(500);
 		uri.append(this.targetUri.toString());
 		// Handle the path given to the servlet
@@ -451,10 +443,5 @@ public class ProxyServlet extends HttpServlet {
 		}
 
 		asciiQueryChars.set((int) '%');//leave existing percent escapes in place
-	}
-
-	@Override
-	public void log(String msg) { // DMJ
-		System.out.println(msg);
 	}
 }
