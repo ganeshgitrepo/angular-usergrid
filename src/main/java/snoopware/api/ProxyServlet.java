@@ -62,7 +62,6 @@ import java.util.logging.Level;
  *
  * @author David Smiley dsmiley@mitre.org
  */
-
 public class ProxyServlet extends HttpServlet {
 	/* INIT PARAMETER NAME CONSTANTS */
 	/**

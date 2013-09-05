@@ -4,7 +4,7 @@ client = new Usergrid.Client({
 	appName: "volda",
 	logging: true,
 	buildCurl: true,
-	URI: "http://localhost:8080/" + rootPath + "/api"
+	URI: "http://localhost:8080" + rootPath + "/api"
 });
 
 var appModule = angular.module("appModule", ["ui.bootstrap"]);
@@ -72,49 +72,61 @@ function RegistrationController($scope, $location) {
 }
 
 // Based on code from http://plnkr.co/edit/DIq3i6YHnPc9EJzd21b3?p=preview 
-appModule.directive('match', function($parse) {
+appModule.directive('auMatch', function($parse) {
 	return {
 		require: 'ngModel',
 		link: function(scope, elem, attrs, ctrl) {
+			ctrl.$setValidity('match', false);
 			scope.$watch(function() {
-				return $parse(attrs.match)(scope) === ctrl.$modelValue;
+				return $parse(attrs.auMatch)(scope) === ctrl.$modelValue;
 			}, function(currentValue) {
-				ctrl.$setValidity('mismatch', currentValue);
-				//scope.$apply();
+				ctrl.$setValidity('match', currentValue);
 			});
 		}
 	};
 });
 
-appModule.directive('uniqueUsername', function($parse) {
+appModule.directive('auUniqueUsername', function() {
 	return {
 		require: 'ngModel',
 		link: function(scope, elem, attrs, ctrl) {
+			ctrl.$setValidity("unique", false);
 			elem.keyup(function(evt) {
-				var options = { type:"user", username: ctrl.$modelValue };
-				client.getEntity(options, function(err, data) {
-					ctrl.$setValidity(err); // error means user not found with that username
+				var options = { type:"user", name: ctrl.$modelValue };
+				if (ctrl.$modelValue && ctrl.$modelValue.trim().length > 0) {
+					client.getEntity(options, function(err, data) {
+						ctrl.$setValidity("unique", err); // error means unique
+						scope.$apply();
+					});
+				} else {
+					ctrl.$setValidity("unique", false); // consider empty string non unique
 					scope.$apply();
-				});
+				}
 			});
 		}
 	};
 });
 
-//appModule.directive('uniqueEmail', function($parse) {
-//	return {
-//		require: 'ngModel',
-//		link: function(scope, elem, attrs, ctrl) {
-//			elem.keyup(function(evt) {
-//				var options = { type:"user", username: ctrl.$modelValue };
-//				client.getEntity(options, function(err, data) {
-//					ctrl.$setValidity(err); // error means user not found with that username
-//					scope.$apply();
-//				});
-//			});
-//		}
-//	};
-//});
+appModule.directive('auUniqueEmail', function() {
+	return {
+		require: 'ngModel',
+		link: function(scope, elem, attrs, ctrl) {
+			ctrl.$setValidity("unique", false);
+			elem.keyup(function(evt) {
+				var options = { type:"user", email: ctrl.$modelValue, name: ctrl.$modelValue };
+				if (ctrl.$modelValue && ctrl.$modelValue.trim().length > 0) {
+					client.getEntity(options, function(err, data) {
+						ctrl.$setValidity("unique", err); // error means unique
+						scope.$apply();
+					});
+				} else {
+					ctrl.$setValidity("unique", false); // consider empty string non unique
+					scope.$apply();
+				}
+			});
+		}
+	};
+});
 
 function Page1Controller($scope, $location) {
 	if (!client.getToken()) {

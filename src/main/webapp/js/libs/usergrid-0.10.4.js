@@ -342,6 +342,9 @@ Usergrid.Client.prototype.getEntity = function (options, callback) {
   var entity = new Usergrid.Entity(options);
   entity.fetch(function(err, data) {
     if (typeof(callback) === 'function') {
+	  if (err) { // DMJ
+		  entity.error = data.error; 
+	  }
       callback(err, entity);
     }
   });

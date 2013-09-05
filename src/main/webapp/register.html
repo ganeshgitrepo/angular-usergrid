@@ -20,36 +20,50 @@
 	<div class="control-group">
 		<label class="control-label" for="username">Username</label> 
 		<div class="controls">
-			<input id="username" ng-model="username" type="text" required unique-username>
+			<input id="username" name="username" ng-model="username" type="text" 
+				ng-required ng-min-length="1" ng-max-length="16" au-unique-username>
+			<span class="glyphicon icon-ok" ng-show="registrationForm.username.$valid"></span>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<label class="control-label" for="email">Email</label> 
 		<div class="controls">
-			<input id="email" ng-model="email" type="email" required>
+			<input id="email" name="email" ng-model="email" type="email" ng-required au-unique-email>
+			<span class="glyphicon icon-ok" ng-show="registrationForm.email.$valid"></span>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<label class="control-label" for="password">Password</label>
 		<div class="controls">
-			<input id="password" ng-model="password" type="password" required>
+
+			<input id="password" name="password" type="password" 
+				ng-model="password" au-match="password_verify" ng-required ng-min-length="3">
+
+			<span ng-show="password.length">
+				<span class="glyphicon icon-ok" ng-show="registrationForm.password_verify.$valid"></span>
+			</span>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<label class="control-label" for="password">Password (verify)</label>
 		<div class="controls">
-			<input id="password" ng-model="password_verify" 
-			   type="password" required match="password"> 
+
+			<input id="password_verify" name="password_verify" type="password" 
+				ng-model="password_verify" au-match="password" ng-required ng-min-length="3">
+			
+			<span ng-show="password.length">
+				<span class="glyphicon icon-ok" ng-show="registrationForm.password_verify.$valid"></span>
+			</span>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<div class="controls">
-			<input class="btn btn-primary" 
-				type="button" value="Register" ng-disabled="!registrationForm.$valid"
+			<input class="btn btn-primary" type="button" value="Register" 
+				ng-disabled="!registrationForm.$valid"
 				ng-click="register(username, password, email)">
 		</div> 
 	</div>

@@ -34,7 +34,7 @@ import org.usergrid.java.client.Client;
 @WebServlet(
 	name = "usergridProxy", urlPatterns = {"/api/*"}, 
 	initParams={
-		@WebInitParam(name="log", value="true"),
+		@WebInitParam(name="log", value="false"),
 		@WebInitParam(name="targetUri", value="https://api.usergrid.com")
 	}) 
 @SuppressWarnings("serial")
@@ -79,12 +79,12 @@ public class UserGridProxyServlet extends ProxyServlet {
 			? false : req.getQueryString().contains("access_token=");
 
 		if (!hasAccessToken
-			&& ("POST".equals(req.getMethod()) || "GET".equals(req.getMethod()))
-			&& req.getPathInfo().contains("/" + applicationName + "/users")) {
+			&& ("POST".equalsIgnoreCase(req.getMethod()) || "GET".equalsIgnoreCase(req.getMethod()))
+			&& req.getPathInfo().contains("/" + applicationName + "/user")) {
 
 				String header = "Bearer " +  userGridClient.getAccessToken(); 
 				proxyReq.setHeader("Authorization", header);
-				log.log(Level.INFO, "Added header = {0}", header);
+				log.log(Level.FINEST, "Added header = {0}", header);
 		}
 	}
 }
