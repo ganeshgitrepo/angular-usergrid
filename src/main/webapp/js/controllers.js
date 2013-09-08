@@ -21,6 +21,8 @@ appModule.config(function($routeProvider, $locationProvider) {
 			controller:LoginController, templateUrl:"login.html"})
 		.when(rootPath + "/register", {
 			controller:RegistrationController, templateUrl:"register.html"})
+		.when(rootPath + "/registered", {
+			controller:RegisteredController, templateUrl:"registered.html"})
 		.otherwise({"redirectTo":rootPath});
 });
 
