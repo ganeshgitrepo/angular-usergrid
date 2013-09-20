@@ -1,7 +1,7 @@
 var rootPath = "/angular-usergrid";
 client = new Usergrid.Client({
-	orgName: "snoopdave",
-	appName: "volda",
+	orgName: "test-organization",
+	appName: "test-app",
 	logging: true,
 	buildCurl: true,
 	URI: "http://localhost:8080" + rootPath + "/api"
@@ -71,6 +71,9 @@ function RegistrationController($scope, $location) {
 	$scope.closeAlert = function(index) {
 		$scope.alerts.splice(index, 1);
 	};
+}
+
+function RegisteredController($scope, $location) {
 }
 
 // Based on code from http://plnkr.co/edit/DIq3i6YHnPc9EJzd21b3?p=preview 
