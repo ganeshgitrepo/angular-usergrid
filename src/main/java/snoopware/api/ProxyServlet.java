@@ -41,7 +41,6 @@ import java.net.URI;
 import java.util.BitSet;
 import java.util.Enumeration;
 import java.util.Formatter;
-import java.util.logging.Level;
 
 /**
  * An HTTP reverse proxy/gateway servlet. It is designed to be extended for customization if
