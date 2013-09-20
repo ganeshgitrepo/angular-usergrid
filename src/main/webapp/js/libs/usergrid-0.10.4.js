@@ -130,8 +130,16 @@ Usergrid.Client.prototype.request = function (options, callback) {
     }
     //call completed
     clearTimeout(timeout);
+
     //decode the response
-    response = JSON.parse(xhr.responseText);
+    // DMJ added the try catch because sometimes Usergrid returns HTML error page
+    try {
+      response = JSON.parse(xhr.responseText);
+    } catch (e) {
+      response.error = "Unknown";
+      response.error_description = "Cannot parse response as JSON data.";
+    }
+
     if (xhr.status != 200)   {
       //there was an api error
       var error = response.error;
