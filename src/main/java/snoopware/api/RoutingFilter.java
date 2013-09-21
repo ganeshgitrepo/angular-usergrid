@@ -16,7 +16,6 @@
 package snoopware.api;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -26,10 +25,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @WebFilter("/*")
 public class RoutingFilter implements Filter {
-  private static final Logger log = Logger.getLogger(RoutingFilter.class.getName());
+  private Logger logger = LoggerFactory.getLogger(RoutingFilter.class);
 
   private String angularRoutes[] = {
     "login",  

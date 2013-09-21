@@ -19,14 +19,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.http.HttpRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.usergrid.java.client.Client;
 
 /**
@@ -41,8 +41,7 @@ import org.usergrid.java.client.Client;
 })
 @SuppressWarnings("serial")
 public class UserGridProxyServlet extends ProxyServlet {
-
-  protected static final Logger log = Logger.getLogger(ProxyServlet.class.getName());
+  private Logger log = LoggerFactory.getLogger(RoutingFilter.class);
   private Client userGridClient;
   private String applicationName;
 
@@ -60,9 +59,9 @@ public class UserGridProxyServlet extends ProxyServlet {
       try {
         targetUri = new URI((String) properties.get("app.usergridUri"));
       } catch (NullPointerException ex) {
-        log.log(Level.INFO, "app.usergridUri not specified, using " + targetUri);
+        log.info("app.usergridUri not specified, using " + targetUri);
       } catch (URISyntaxException ex) {
-        log.log(Level.INFO, "Ignoring app.usergridUri because it is invalid.");
+        log.info("Ignoring app.usergridUri because it is invalid.");
       }
 
       applicationName = (String) properties.get("app.applicationName");
@@ -75,7 +74,7 @@ public class UserGridProxyServlet extends ProxyServlet {
       userGridClient.authorizeAppClient(clientId, clientSecret);
 
     } catch (IOException ex) {
-      log.log(Level.SEVERE, "Unable to load app.properties and authorize the client", ex);
+      log.info("Unable to load app.properties and authorize the client", ex);
     }
   }
 
@@ -95,7 +94,7 @@ public class UserGridProxyServlet extends ProxyServlet {
 
       String header = "Bearer " + userGridClient.getAccessToken();
       proxyReq.setHeader("Authorization", header);
-      log.log(Level.FINEST, "Added header = {0}", header);
+      log.info("Added header = {0}", header);
     }
   }
 }
