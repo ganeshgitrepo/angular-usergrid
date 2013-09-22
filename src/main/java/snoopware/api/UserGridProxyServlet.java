@@ -64,13 +64,13 @@ public class UserGridProxyServlet extends ProxyServlet {
         log.info("Ignoring app.usergridUri because it is invalid.");
       }
 
-      applicationName = (String) properties.get("app.applicationName");
-      String organizationId = (String) properties.get("app.organizationId");
-      String applicationId = (String) properties.get("app.applicationId");
+      applicationName = (String) properties.get("app.name");
+      String organizationId = (String) properties.get("org.id");
+      String applicationId = (String) properties.get("app.id");
       userGridClient = new Client(organizationId, applicationId);
 
-      String clientId = (String) properties.get("app.clientId");
-      String clientSecret = (String) properties.get("app.clientSecret");
+      String clientId = (String) properties.get("org.clientId");
+      String clientSecret = (String) properties.get("org.clientSecret");
       userGridClient.authorizeAppClient(clientId, clientSecret);
 
     } catch (IOException ex) {
@@ -94,7 +94,7 @@ public class UserGridProxyServlet extends ProxyServlet {
 
       String header = "Bearer " + userGridClient.getAccessToken();
       proxyReq.setHeader("Authorization", header);
-      log.info("Added header = {0}", header);
+      log.info("added header {} to URL {}", header, req.getRequestURL().toString());
     }
   }
 }
