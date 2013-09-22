@@ -51,7 +51,7 @@ public class RoutingFilter implements Filter {
     for (String angularRoute : angularRoutes) {
       if (req.getServletPath().endsWith(angularRoute)) {
         RequestDispatcher rd = req.getRequestDispatcher("/index.html");
-        //log.log(Level.INFO,"Dispatching {0} to /index.html", req.getServletPath());
+        logger.debug("Dispatching {} to /index.html", req.getServletPath());
         rd.forward(request, response);
         return;
       }
