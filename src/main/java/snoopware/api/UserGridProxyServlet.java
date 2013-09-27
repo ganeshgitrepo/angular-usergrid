@@ -94,7 +94,7 @@ public class UserGridProxyServlet extends ProxyServlet {
 
       String header = "Bearer " + userGridClient.getAccessToken();
       proxyReq.setHeader("Authorization", header);
-      log.info("added header {} to URL {}", header, req.getRequestURL().toString());
+      log.info("Added header {} to URL {}", header, req.getRequestURL().toString());
     }
   }
 }
