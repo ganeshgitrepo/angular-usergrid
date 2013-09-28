@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
+import java.util.logging.Level;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebInitParam;
@@ -41,45 +42,46 @@ import org.usergrid.java.client.Client;
 })
 @SuppressWarnings("serial")
 public class UserGridProxyServlet extends ProxyServlet {
-  private Logger log = LoggerFactory.getLogger(RoutingFilter.class);
-  private Client userGridClient;
+  private final Logger log = LoggerFactory.getLogger(RoutingFilter.class);
+  private Client client;
   private String applicationName;
 
   /**
    * Override to authorized UserGrid client with creds from app.propeties.
+   * @param servletConfig
+   * @throws javax.servlet.ServletException If Usergrid client cannot be initialized.
    */
   @Override
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
-    Properties properties = new Properties();
     try {
-
+      Properties properties = new Properties();
       properties.load(getClass().getResourceAsStream("/app.properties"));
 
-      try {
-        targetUri = new URI((String) properties.get("app.usergridUri"));
-      } catch (NullPointerException ex) {
-        log.info("app.usergridUri not specified, using " + targetUri);
-      } catch (URISyntaxException ex) {
-        log.info("Ignoring app.usergridUri because it is invalid.");
-      }
+      targetUri = new URI((String) properties.get("app.usergridUri"));
 
       applicationName = (String) properties.get("app.name");
       String organizationId = (String) properties.get("org.id");
       String applicationId = (String) properties.get("app.id");
-      userGridClient = new Client(organizationId, applicationId);
+      client = new Client(organizationId, applicationId);
 
       String clientId = (String) properties.get("org.clientId");
       String clientSecret = (String) properties.get("org.clientSecret");
-      userGridClient.authorizeAppClient(clientId, clientSecret);
+      client.authorizeAppClient(clientId, clientSecret);
+
+      log.info("Usergrid client initialized");
 
     } catch (IOException ex) {
-      log.info("Unable to load app.properties and authorize the client", ex);
+      throw new ServletException("Unable to load app.properties and authorize the client", ex);
+    } catch (URISyntaxException ex) {
+      throw new ServletException("Malformed app.usergridUri specified in app.properties", ex);
     }
   }
 
   /**
    * Override to add Authorization to requests that need it.
+   * @param req
+   * @param proxyReq
    */
   @Override
   protected void copyRequestHeaders(HttpServletRequest req, HttpRequest proxyReq) {
@@ -92,9 +94,11 @@ public class UserGridProxyServlet extends ProxyServlet {
       && ("POST".equalsIgnoreCase(req.getMethod()) || "GET".equalsIgnoreCase(req.getMethod()))
       && req.getPathInfo().contains("/" + applicationName + "/user")) {
 
-      String header = "Bearer " + userGridClient.getAccessToken();
+      String header = "Bearer " + client.getAccessToken();
       proxyReq.setHeader("Authorization", header);
-      log.info("Added header {} to URL {}", header, req.getRequestURL().toString());
+      log.debug("Added header {} to URL {}", header, req.getRequestURL().toString());
+    } else {
+      log.debug("Not adding header to request with " + req.getRequestURL().toString());
     }
   }
 }

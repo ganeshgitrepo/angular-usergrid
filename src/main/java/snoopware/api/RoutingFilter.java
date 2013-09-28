@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 @WebFilter("/*")
 public class RoutingFilter implements Filter {
-  private Logger logger = LoggerFactory.getLogger(RoutingFilter.class);
+  private final Logger logger = LoggerFactory.getLogger(RoutingFilter.class);
 
   private String angularRoutes[] = {
     "login",  
