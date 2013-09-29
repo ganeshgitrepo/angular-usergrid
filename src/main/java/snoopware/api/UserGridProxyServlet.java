@@ -15,11 +15,6 @@
  */
 package snoopware.api;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Properties;
-import java.util.logging.Level;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebInitParam;
@@ -48,34 +43,13 @@ public class UserGridProxyServlet extends ProxyServlet {
 
   /**
    * Override to authorized UserGrid client with creds from app.propeties.
-   * @param servletConfig
-   * @throws javax.servlet.ServletException If Usergrid client cannot be initialized.
    */
   @Override
   public void init(ServletConfig servletConfig) throws ServletException {
     super.init(servletConfig);
-    try {
-      Properties properties = new Properties();
-      properties.load(getClass().getResourceAsStream("/app.properties"));
-
-      targetUri = new URI((String) properties.get("app.usergridUri"));
-
-      applicationName = (String) properties.get("app.name");
-      String organizationId = (String) properties.get("org.id");
-      String applicationId = (String) properties.get("app.id");
-      client = new Client(organizationId, applicationId);
-
-      String clientId = (String) properties.get("org.clientId");
-      String clientSecret = (String) properties.get("org.clientSecret");
-      client.authorizeAppClient(clientId, clientSecret);
-
-      log.info("Usergrid client initialized");
-
-    } catch (IOException ex) {
-      throw new ServletException("Unable to load app.properties and authorize the client", ex);
-    } catch (URISyntaxException ex) {
-      throw new ServletException("Malformed app.usergridUri specified in app.properties", ex);
-    }
+    client = new UsergridClient();
+    applicationName = UsergridClient.applicationName;
+    targetUri = UsergridClient.targetUri;
   }
 
   /**
